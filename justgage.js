@@ -857,7 +857,7 @@ JustGage = function(config) {
 };
 
 /** Refresh gauge level */
-JustGage.prototype.refresh = function(val, max, config) {
+JustGage.prototype.refresh = function(val, min, max, config) {
 
   var obj = this;
   var displayVal, color, max = max || null;
@@ -898,6 +898,36 @@ JustGage.prototype.refresh = function(val, max, config) {
       });
       setDy(obj.txtMin, obj.params.minFontSize, obj.params.minY);
       setDy(obj.txtMax, obj.params.minFontSize, obj.params.minY);
+    }
+  }
+
+  // set new min
+  if (min !== null) {
+    obj.config.min = min;
+    // TODO: update customSectors
+
+    obj.txtMinimum = obj.config.min;
+    if (obj.config.minTxt) {
+      obj.txtMinimum = obj.config.minTxt;
+    } else if (obj.config.humanFriendly) {
+      obj.txtMinimum = humanFriendlyNumber(obj.config.min, obj.config.humanFriendlyDecimal);
+    } else if (obj.config.formatNumber) {
+      obj.txtMinimum = formatNumber(obj.config.min);
+    }
+    if (!obj.config.reverse) {
+      obj.txtMin.attr({
+        "text": obj.txtMinimum
+      });
+      setDy(obj.txtMin, obj.params.maxFontSize, obj.params.minY);
+    } else {
+      obj.txtMax.attr({
+        "text": obj.txtMinimum
+      });
+      obj.txtMin.attr({
+        "text": obj.txtMaximum
+      });
+      setDy(obj.txtMax, obj.params.maxFontSize, obj.params.maxY);
+      setDy(obj.txtMin, obj.params.maxFontSize, obj.params.maxY);
     }
   }
 
